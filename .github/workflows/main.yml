@@ -2,10 +2,14 @@
 name: CI DevSecOps Pipeline
 
 on:
-  push:
-    branches: ['**']     # en cualquier rama
   pull_request:
-    branches: [ main ]   # en PRs contra main
+    types:
+      - closed
+    branches:
+      - main
+  push:
+    tags:
+      - 'release-*'  # Solo tags que empiezan con release-
 
 jobs:
   veracode-scan:
@@ -26,7 +30,7 @@ jobs:
       - name: Veracode Upload And Scan
         uses: veracode/veracode-uploadandscan-action@0.2.7
         with:
-          appname: 'APP_02'
+          appname: 'APP_03'
           createprofile: true
           filepath: 'artifact/app.zip'
           version: '${{ github.sha }}'
@@ -64,17 +68,3 @@ jobs:
           . .venv/bin/activate
           pytest -q || true
 
-  deploy:
-    name: 🚀 Deploy to Render
-    needs: test-and-lint
-    if: github.ref == 'refs/heads/main' && needs.veracode-scan.result == 'success'
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Deploy to Render
-        run: |
-          curl -X POST https://api.render.com/deploy/srv-<TU-SRV-ID> \
-            -H "Accept: application/json" \
-            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}"
