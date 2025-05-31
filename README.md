@@ -1,5 +1,5 @@
 
-# Company Management App
+# Company Management APP
 
 **Company Management App** is a web platform that allows users to manage companies and post comments about them. The application supports three roles (`admin`, `owner`, and `user`) with different permissions and access levels.
 
