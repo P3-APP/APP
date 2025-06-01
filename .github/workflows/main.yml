@@ -68,3 +68,17 @@ jobs:
           . .venv/bin/activate
           pytest -q || true
 
+  deploy:
+    name: 🚀 Deploy to Render
+    needs: test-and-lint
+    if: github.ref == 'refs/heads/main' && needs.veracode-scan.result == 'success'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Deploy to Render
+        run: |
+          curl -X POST https://api.render.com/deploy/srv-d0tpnhqdbo4c739ug2k0 \
+            -H "Accept: application/json" \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}"
