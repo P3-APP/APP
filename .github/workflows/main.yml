@@ -33,7 +33,7 @@ jobs:
           appname: 'APP_03'
           createprofile: true
           filepath: 'artifact/app.zip'
-          version: '${{ github.sha }}'
+          version: '${{ github.ref_name }}'
           vid: ${{ secrets.VERACODE_API_ID }}
           vkey: ${{ secrets.VERACODE_API_KEY }}
           # fail-on-severity HIGH es el comportamiento por defecto
